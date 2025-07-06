@@ -3,22 +3,13 @@
 rec {
   # Common overlays for MCP server dependencies
   commonMcpOverlays = [
-    # Anthropic client fixes
-    anthropicOverlay
-    
-    # HTTP client fixes
-    httpClientOverlay
-    
-    # Pydantic compatibility
-    pydanticOverlay
-    
-    # Common build dependencies
-    buildDepsOverlay
+    # For now, keep it simple to test basic functionality
+    # TODO: Add back specific overrides as needed
   ];
 
   # Anthropic client package fixes
   anthropicOverlay = final: prev: {
-    anthropic = prev.anthropic.overridePythonAttrs (old: {
+    anthropic = prev.anthropic.overrideAttrs (old: {
       # Fix build dependencies
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ [
         final.setuptools
@@ -48,7 +39,7 @@ rec {
 
   # HTTP client compatibility fixes
   httpClientOverlay = final: prev: {
-    httpx = prev.httpx.overridePythonAttrs (old: {
+    httpx = prev.httpx.overrideAttrs (old: {
       # Ensure compatible versions
       propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [
         final.httpcore
@@ -58,7 +49,7 @@ rec {
       ];
     });
     
-    aiohttp = prev.aiohttp.overridePythonAttrs (old: {
+    aiohttp = prev.aiohttp.overrideAttrs (old: {
       # Fix compilation issues on some platforms
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ [
         pkgs.gcc
@@ -71,7 +62,7 @@ rec {
 
   # Pydantic v1/v2 compatibility
   pydanticOverlay = final: prev: {
-    pydantic = prev.pydantic.overridePythonAttrs (old: {
+    pydantic = prev.pydantic.overrideAttrs (old: {
       # Ensure proper typing extensions
       propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [
         final.typing-extensions
@@ -81,7 +72,7 @@ rec {
     });
     
     # Handle pydantic-core compilation
-    pydantic-core = prev.pydantic-core.overridePythonAttrs (old: {
+    pydantic-core = prev.pydantic-core.overrideAttrs (old: {
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ [
         pkgs.rustc
         pkgs.cargo
@@ -96,7 +87,7 @@ rec {
   # Common build dependencies overlay
   buildDepsOverlay = final: prev: {
     # Ensure setuptools is available
-    setuptools = prev.setuptools.overridePythonAttrs (old: {
+    setuptools = prev.setuptools.overrideAttrs (old: {
       # Fix for newer Python versions
       propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ 
         lib.optionals (lib.versionAtLeast final.python.version "3.12") [
@@ -105,14 +96,14 @@ rec {
     });
     
     # Fix wheel building
-    wheel = prev.wheel.overridePythonAttrs (old: {
+    wheel = prev.wheel.overrideAttrs (old: {
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ [
         final.setuptools
       ];
     });
     
     # Fix pip installation issues
-    pip = prev.pip.overridePythonAttrs (old: {
+    pip = prev.pip.overrideAttrs (old: {
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ [
         final.setuptools
         final.wheel
@@ -125,13 +116,13 @@ rec {
     # Filesystem server specific fixes
     filesystem = final: prev: {
       # Add any filesystem-specific dependency fixes here
-      pathspec = prev.pathspec.overridePythonAttrs (old: {
+      pathspec = prev.pathspec.overrideAttrs (old: {
         nativeBuildInputs = (old.nativeBuildInputs or []) ++ [
           final.setuptools
         ];
       });
       
-      watchdog = prev.watchdog.overridePythonAttrs (old: {
+      watchdog = prev.watchdog.overrideAttrs (old: {
         # Fix platform-specific dependencies
         propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ 
           lib.optionals pkgs.stdenv.isDarwin [
@@ -144,7 +135,7 @@ rec {
     # CLI MCP server specific fixes
     cli-mcp-server = final: prev: {
       # Ensure proper shell access
-      subprocess32 = prev.subprocess32.overridePythonAttrs (old: {
+      subprocess32 = prev.subprocess32.overrideAttrs (old: {
         # Skip on Python 3.x as it's built-in
         disabled = lib.versionAtLeast final.python.version "3.0";
       });
@@ -169,7 +160,7 @@ rec {
     # Brave search server fixes
     brave-search = final: prev: {
       # HTTP client fixes for search API
-      requests = prev.requests.overridePythonAttrs (old: {
+      requests = prev.requests.overrideAttrs (old: {
         propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [
           final.urllib3
           final.certifi

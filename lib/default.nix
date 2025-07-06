@@ -1,8 +1,8 @@
-{ pkgs, lib, uv2nix, pyproject-nix }:
+{ pkgs, lib, uv2nix, pyproject-nix, pyproject-build-systems }:
 
 rec {
   # Import all library modules
-  builders = import ./builders.nix { inherit pkgs lib uv2nix pyproject-nix; };
+  builders = import ./builders.nix { inherit pkgs lib uv2nix pyproject-nix pyproject-build-systems; };
   mcpOverrides = import ./mcp-overrides.nix { inherit pkgs lib; };
   conversion = import ./conversion.nix { inherit pkgs lib; };
   debug = import ./debug.nix { inherit pkgs lib; };

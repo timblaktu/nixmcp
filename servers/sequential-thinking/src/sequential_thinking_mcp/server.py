@@ -17,7 +17,7 @@ import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Sequence
 
-from mcp import ClientSession, StdioServerSession
+from mcp import ClientSession, ServerSession, stdio_server
 from mcp.server import Server
 from mcp.types import (
     CallToolResult,
@@ -29,6 +29,9 @@ from mcp.types import (
     Tool,
     INVALID_PARAMS,
     INTERNAL_ERROR,
+    ServerCapabilities,
+    ToolsCapability,
+    ResourcesCapability,
 )
 from pydantic import ValidationError
 from rich.console import Console
@@ -457,8 +460,23 @@ class SequentialThinkingServer:
         """Run the server using stdio transport."""
         try:
             # Use stdio transport for MCP communication
-            async with StdioServerSession(self.server) as session:
-                await session.run()
+            from mcp.server.models import InitializationOptions
+            
+            init_options = InitializationOptions(
+                server_name="sequential-thinking-mcp",
+                server_version="0.1.0",
+                capabilities=ServerCapabilities(
+                    tools=ToolsCapability(),
+                    resources=ResourcesCapability()
+                )
+            )
+            
+            async with stdio_server() as (read_stream, write_stream):
+                await self.server.run(
+                    read_stream,
+                    write_stream,
+                    init_options
+                )
         except KeyboardInterrupt:
             if not self.disable_thought_logging:
                 self.console.print("\n[bright_red]Server stopped by user[/bright_red]")

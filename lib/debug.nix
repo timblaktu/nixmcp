@@ -27,7 +27,7 @@ rec {
     pythonInfo = {
       version = pythonSet.python.version;
       executable = "${pythonSet.python}/bin/python";
-      sitePacakges = "${pythonSet.python}/${pythonSet.python.sitePackages}";
+      sitePackages = "${pythonSet.python}/${pythonSet.python.sitePackages}";
     };
     
     # List all packages in Python set

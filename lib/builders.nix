@@ -1,4 +1,4 @@
-{ pkgs, lib, uv2nix, pyproject-nix }:
+{ pkgs, lib, uv2nix, pyproject-nix, pyproject-build-systems }:
 
 let
   # Import common overrides
@@ -28,13 +28,17 @@ in rec {
       sourcePreference = if preferWheels then "wheel" else "sdist";
     };
     
-    # Combine all overlays: common MCP fixes + UV overlay + user extras
-    allOverlays = mcpOverrides.commonMcpOverlays ++ [ uvOverlay ] ++ extraOverlays;
+    # Combine all overlays: build systems + common MCP fixes + UV overlay + user extras
+    allOverlays = [ pyproject-build-systems.overlays.default ] ++ mcpOverrides.commonMcpOverlays ++ [ uvOverlay ] ++ extraOverlays;
+    
+    # Get the python interpreter
+    python = pkgs."python${pythonVersion}";
+    
+    # Create base package set from pyproject.nix builders
+    baseSet = pkgs.callPackage pyproject-nix.build.packages { inherit python; };
     
     # Get Python package set with overlays applied
-    pythonSet = pkgs."python${pythonVersion}".override {
-      packageOverrides = lib.composeManyExtensions allOverlays;
-    };
+    pythonSet = baseSet.overrideScope (lib.composeManyExtensions allOverlays);
     
     # Create virtual environment with dependencies
     mcpEnv = pythonSet.mkVirtualEnv name workspace.deps.default;
