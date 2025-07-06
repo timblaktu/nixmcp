@@ -18,46 +18,11 @@
     };
   };
 
-  outputs = inputs@{ flake-parts, ... }:
+  outputs = inputs@{ flake-parts, nixpkgs, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
       
-      imports = [
-        inputs.uv2nix.flakeModule
-      ];
-
-      perSystem = { config, self', inputs', pkgs, system, lib, ... }: let
-        # Import our library functions
-        uvMcpLib = import ./lib { 
-          inherit pkgs lib; 
-          inherit (inputs) uv2nix pyproject-nix;
-        };
-        
-        # Build all MCP servers
-        mcpServers = uvMcpLib.buildAllServers ./servers;
-        
-        # Create overlay for external use
-        uvMcpOverlay = final: prev: {
-          uv-mcp-servers = mcpServers // {
-            lib = uvMcpLib;
-          };
-        };
-        
-      in {
-        # Configure nixpkgs with necessary overlays
-        _module.args.pkgs = import inputs.nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-          overlays = [
-            inputs.pyproject-nix.overlays.default
-            uvMcpOverlay
-          ];
-        };
-
-        # Export packages
-        packages = mcpServers // {
-          default = mcpServers.filesystem;
-        };
+      perSystem = { config, self', inputs', pkgs, system, lib, ... }: {
 
         # Development shell with all necessary tools
         devShells.default = pkgs.mkShell {
@@ -70,14 +35,40 @@
           ];
           
           shellHook = ''
-            echo "UV MCP Servers Development Environment"
-            echo "Available servers: ${builtins.concatStringsSep ", " (builtins.attrNames mcpServers)}"
-            echo "Use 'uv --help' for UV commands"
+            echo "=== UV MCP Servers Development Environment ==="
+            echo "Available tools:"
+            echo "  uv: $(uv --version)"
+            echo "  python: $(python3 --version)"
+            echo "  git: $(git --version | head -1)"
+            echo
+            echo "Next steps:"
+            echo "  1. cd servers/<server-name>"
+            echo "  2. uv lock --python python3"
+            echo "  3. Build with: nix build .#<server-name>"
+            echo
           '';
         };
-
-        # Export overlays for external use
-        overlays.default = uvMcpOverlay;
+        
+        # Simple packages export for now - we'll add the real servers later
+        packages = {
+          # Placeholder packages that will be replaced with real servers
+          default = pkgs.writeText "uv-mcp-servers-readme" ''
+            UV MCP Servers Project
+            =====================
+            
+            This is a collection of MCP servers built with UV and packaged with Nix.
+            
+            Available development commands:
+            - nix develop    # Enter development shell
+            - nix flake show # Show available outputs
+            
+            Servers in development:
+            - sequential-thinking
+            - filesystem
+            - mcp-nixos
+            - cli-mcp-server
+          '';
+        };
       };
 
       # Flake-level outputs
@@ -86,16 +77,17 @@
         homeManagerModules.default = import ./modules/home-manager.nix;
         homeManagerModules.uv-mcp-servers = import ./modules/home-manager.nix;
         
-        # NixOS module  
-        nixosModules.default = import ./modules/nixos.nix;
-        nixosModules.uv-mcp-servers = import ./modules/nixos.nix;
-        
-        # Darwin module
-        darwinModules.default = import ./modules/darwin.nix;
-        darwinModules.uv-mcp-servers = import ./modules/darwin.nix;
-        
-        # Library functions for external use
-        lib = inputs.self.lib.uv-mcp-servers or {};
+        # Simple overlay for now
+        overlays.default = final: prev: {
+          uv-mcp-servers = {
+            lib = import ./lib { 
+              pkgs = final; 
+              lib = final.lib; 
+              uv2nix = inputs.uv2nix; 
+              pyproject-nix = inputs.pyproject-nix; 
+            };
+          };
+        };
       };
     };
 }
