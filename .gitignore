@@ -157,3 +157,6 @@ Desktop.ini
 # Temporary files
 *.tmp
 *.temp
+
+# Cleanup directories
+.to-remove/
