@@ -1,5 +1,5 @@
 {
-  description = "UV-based MCP servers with uv2nix integration";
+  description = "UV MCP Server Framework - Nix infrastructure for UV-based MCP servers";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -14,6 +14,12 @@
     # pyproject-nix for build system integration
     pyproject-nix = {
       url = "github:nix-community/pyproject.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    # External MCP servers as inputs
+    sequential-thinking-mcp = {
+      url = "path:../sequential-thinking-mcp";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -35,38 +41,50 @@
           ];
           
           shellHook = ''
-            echo "=== UV MCP Servers Development Environment ==="
+            echo "=== UV MCP Server Framework Development Environment ==="
             echo "Available tools:"
             echo "  uv: $(uv --version)"
             echo "  python: $(python3 --version)"
             echo "  git: $(git --version | head -1)"
             echo
+            echo "Framework components:"
+            echo "  lib/         - Nix builders and UV integration functions"
+            echo "  modules/     - Home Manager modules for MCP deployment"
+            echo "  scripts/     - Development and deployment tools"
+            echo "  docs/        - Framework documentation and guides"
+            echo "  examples/    - Template projects and usage patterns"
+            echo
             echo "Next steps:"
-            echo "  1. cd servers/<server-name>"
-            echo "  2. uv lock --python python3"
-            echo "  3. Build with: nix build .#<server-name>"
+            echo "  1. Create/clone MCP server repositories"
+            echo "  2. Add servers as flake inputs"
+            echo "  3. Build with framework: nix build .#<server-name>"
             echo
           '';
         };
         
-        # Simple packages export for now - we'll add the real servers later
+        # Framework packages
         packages = {
-          # Placeholder packages that will be replaced with real servers
-          default = pkgs.writeText "uv-mcp-servers-readme" ''
-            UV MCP Servers Project
-            =====================
+          default = pkgs.writeText "uv-mcp-framework-readme" ''
+            UV MCP Server Framework
+            =======================
             
-            This is a collection of MCP servers built with UV and packaged with Nix.
+            Nix infrastructure for building and deploying UV-based MCP servers.
             
-            Available development commands:
+            This framework provides:
+            - UV-Nix integration builders
+            - Home Manager deployment modules
+            - Development tools and templates
+            - Standardized MCP server patterns
+            
+            Available commands:
             - nix develop    # Enter development shell
             - nix flake show # Show available outputs
             
-            Servers in development:
-            - sequential-thinking
-            - filesystem
-            - mcp-nixos
+            External MCP servers (add as flake inputs):
+            - sequential-thinking-mcp
             - cli-mcp-server
+            - mcp-filesystem
+            - mcp-nixos
           '';
         };
       };
