@@ -19,12 +19,12 @@
     
     # External MCP servers as inputs
     sequential-thinking-mcp = {
-      url = "path:../sequential-thinking-mcp";
+      url = "git+file:../sequential-thinking-mcp";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = inputs@{ flake-parts, nixpkgs, ... }:
+  outputs = inputs@{ flake-parts, nixpkgs, sequential-thinking-mcp, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
       
@@ -86,6 +86,9 @@
             - mcp-filesystem
             - mcp-nixos
           '';
+          
+          # Re-export external MCP servers for convenience
+          sequential-thinking-mcp = sequential-thinking-mcp.packages.${system}.default;
         };
       };
 
