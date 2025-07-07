@@ -19,7 +19,7 @@
     
     # External MCP servers as inputs (only those with proper flake support)
     sequential-thinking-mcp = {
-      url = "path:/home/tim/src/sequential-thinking-mcp";
+      url = "github:timblaktu/sequential-thinking-uv";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
