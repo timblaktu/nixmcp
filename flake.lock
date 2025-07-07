@@ -106,14 +106,18 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1751899895,
-        "narHash": "sha256-yH13d4GZzQPAXwvBfeDPckwamlNZ3HnkQy6FawLWXa0=",
-        "path": "/home/tim/src/mcp-filesystem",
-        "type": "path"
+        "lastModified": 1751899872,
+        "narHash": "sha256-NZbc4IM/8GmGsEGxLEJI+lnFEp04eYKuxW9GfFcaIHQ=",
+        "owner": "timblaktu",
+        "repo": "mcp-filesystem-safurrier",
+        "rev": "4179bebc6073e42cc34ad524c716097f08204b95",
+        "type": "github"
       },
       "original": {
-        "path": "/home/tim/src/mcp-filesystem",
-        "type": "path"
+        "owner": "timblaktu",
+        "ref": "uv",
+        "repo": "mcp-filesystem-safurrier",
+        "type": "github"
       }
     },
     "mcp-nixos": {

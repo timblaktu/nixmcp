@@ -34,7 +34,7 @@
     };
     
     mcp-filesystem = {
-      url = "path:/home/tim/src/mcp-filesystem";
+      url = "github:timblaktu/mcp-filesystem-safurrier/uv";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
