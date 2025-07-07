@@ -17,14 +17,29 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
-    # External MCP servers as inputs
+    # External MCP servers as inputs (only those with proper flake support)
     sequential-thinking-mcp = {
       url = "github:timblaktu/sequential-thinking-uv";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    
+    mcp-nixos = {
+      url = "github:utensils/mcp-nixos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    cli-mcp-server = {
+      url = "github:timblaktu/cli-mcp-server";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    mcp-filesystem = {
+      url = "path:/home/tim/src/mcp-filesystem";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ flake-parts, nixpkgs, sequential-thinking-mcp, ... }:
+  outputs = inputs@{ flake-parts, nixpkgs, sequential-thinking-mcp, mcp-nixos, cli-mcp-server, mcp-filesystem, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
       
@@ -80,15 +95,20 @@
             - nix develop    # Enter development shell
             - nix flake show # Show available outputs
             
-            External MCP servers (add as flake inputs):
+            External MCP servers (available via framework):
             - sequential-thinking-mcp
+            - mcp-nixos
             - cli-mcp-server
             - mcp-filesystem
-            - mcp-nixos
+            
+            Note: mcp-filesystem flakified and added!
           '';
           
           # Re-export external MCP servers for convenience
           sequential-thinking-mcp = sequential-thinking-mcp.packages.${system}.default;
+          mcp-nixos = mcp-nixos.packages.${system}.default;
+          cli-mcp-server = cli-mcp-server.packages.${system}.default;
+          mcp-filesystem = mcp-filesystem.packages.${system}.default;
         };
       };
 
