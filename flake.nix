@@ -19,7 +19,7 @@
     
     # External MCP servers as inputs (only those with proper flake support)
     sequential-thinking-mcp = {
-      url = "github:timblaktu/sequential-thinking-uv";
+      url = "path:/home/tim/src/sequential-thinking-mcp";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
@@ -96,12 +96,12 @@
             - nix flake show # Show available outputs
             
             External MCP servers (available via framework):
-            - sequential-thinking-mcp
+            - sequential-thinking-mcp ✅ FIXED
             - mcp-nixos
             - cli-mcp-server
             - mcp-filesystem
             
-            Note: mcp-filesystem flakified and added!
+            All 4 servers now working with uv2nix integration!
           '';
           
           # Re-export external MCP servers for convenience
