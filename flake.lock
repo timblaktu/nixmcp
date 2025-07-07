@@ -127,15 +127,15 @@
       "locked": {
         "lastModified": 1751846511,
         "narHash": "sha256-JnPvqsgT/BfoCPWtLBOHeG8grQN4giCQbQA0TydKXqI=",
-        "ref": "refs/heads/main",
+        "owner": "timblaktu",
+        "repo": "sequential-thinking-uv",
         "rev": "b85e016efd85ebea2a086baee79f255eb60b5a2c",
-        "revCount": 2,
-        "type": "git",
-        "url": "file:../sequential-thinking-mcp"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:../sequential-thinking-mcp"
+        "owner": "timblaktu",
+        "repo": "sequential-thinking-uv",
+        "type": "github"
       }
     },
     "systems": {
