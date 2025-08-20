@@ -118,7 +118,7 @@
         homeManagerModules.default = import ./modules/home-manager.nix;
         homeManagerModules.uv-mcp-servers = import ./modules/home-manager.nix;
         
-        # Simple overlay for now
+        # Overlay with watchfiles 1.1.0 fix and UV MCP framework
         overlays.default = final: prev: {
           uv-mcp-servers = {
             lib = import ./lib { 
@@ -128,6 +128,22 @@
               pyproject-nix = inputs.pyproject-nix; 
             };
           };
+          
+          # Fix watchfiles test failures that affect MCP servers
+          pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+            (python-final: python-prev: {
+              watchfiles = python-prev.watchfiles.overridePythonAttrs (old: {
+                version = "1.1.0";
+                src = final.fetchPypi {
+                  pname = "watchfiles";
+                  version = "1.1.0";
+                  hash = "sha256-0xg50gai0gg03b0y54bbmhyxcrkf5cv9bj4jkqwyxz6bfbndfgk9";
+                };
+                # Keep tests enabled to verify the fix works
+                doCheck = true;
+              });
+            })
+          ];
         };
       };
     };
