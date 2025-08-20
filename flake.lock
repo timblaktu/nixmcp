@@ -424,17 +424,14 @@
         "uv2nix": "uv2nix_3"
       },
       "locked": {
-        "lastModified": 1751907761,
-        "narHash": "sha256-KKbP6xo2kWcwLHrThKbf4sb08xke72i89vt7YY7N5hQ=",
-        "owner": "timblaktu",
-        "repo": "sequential-thinking-uv",
-        "rev": "93852fb075b0102bcff1990f0eff8264c5f00f3a",
-        "type": "github"
+        "lastModified": 1751939677,
+        "narHash": "sha256-GOOba63rUYmBS5/3khazirOc4XYP6ESRUUohlf/2bcE=",
+        "path": "/home/tim/src/sequential-thinking-mcp",
+        "type": "path"
       },
       "original": {
-        "owner": "timblaktu",
-        "repo": "sequential-thinking-uv",
-        "type": "github"
+        "path": "/home/tim/src/sequential-thinking-mcp",
+        "type": "path"
       }
     },
     "systems": {
